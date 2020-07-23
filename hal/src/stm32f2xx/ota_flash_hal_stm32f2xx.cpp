@@ -350,6 +350,8 @@ void HAL_FLASH_Read_ServerAddress(ServerAddress* server_addr)
 	bool udp = HAL_Feature_Get(FEATURE_CLOUD_UDP);
     const void* data = dct_read_app_data_lock(udp ? DCT_ALT_SERVER_ADDRESS_OFFSET : DCT_SERVER_ADDRESS_OFFSET);
     parseServerAddressData(server_addr, (const uint8_t*)data, DCT_SERVER_ADDRESS_SIZE);
+    LOG(INFO,"address :%d",(const uint8_t*)data);
+    LOG(INFO,"address :%s %d", server_addr->domain, server_addr->ip);
     dct_read_app_data_unlock(udp ? DCT_ALT_SERVER_ADDRESS_OFFSET : DCT_SERVER_ADDRESS_OFFSET);
 }
 

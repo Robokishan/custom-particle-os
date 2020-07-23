@@ -26,6 +26,8 @@
 
 #define IPNUM(ip)       ((ip)>>24)&0xff,((ip)>>16)&0xff,((ip)>> 8)&0xff,((ip)>> 0)&0xff
 
+ServerAddress oizom_address;
+
 namespace {
 
 uint16_t cloud_udp_port = PORT_COAPS; // default Particle Cloud UDP port
@@ -110,6 +112,21 @@ int SessionConnection::save(const ServerAddress& addr)
 
 #endif /* HAL_PLATFORM_CLOUD_UDP */
 
+void OIZOM_CUSTOM_SERVERADDR(const char* domain)
+{
+    LOG(INFO,"IPADDRS %s",domain);
+    oizom_address.custom_domain_name = true;
+    strcpy(oizom_address.domain,domain);
+}
+
+void GET_CUSTOM_OIZOM_SERVERADDR(ServerAddress *serveraddr)
+{
+    if(oizom_address.custom_domain_name == true)
+    {
+        strcpy(serveraddr->domain,oizom_address.domain);
+    }   
+}
+
 // Same return value as connect(), -1 on error
 int spark_cloud_socket_connect()
 {
@@ -128,7 +145,7 @@ int spark_cloud_socket_connect()
 
     ServerAddress server_addr = {};
     HAL_FLASH_Read_ServerAddress(&server_addr);
-
+    GET_CUSTOM_OIZOM_SERVERADDR(&server_addr);
     // if server address is erased, restore with a backup from system firmware
     if (server_addr.addr_type != IP_ADDRESS && server_addr.addr_type != DOMAIN_NAME) {
         LOG(WARN, "Public Server Address was blank, restoring.");

@@ -185,6 +185,18 @@ void spark_process(void)
     Spark_Idle_Events(true);
 }
 
+void spark_change_cloud_server(const char* ip)
+{
+    LOG(INFO,"custom server %s ",ip);
+    OIZOM_CUSTOM_SERVERADDR(ip);
+}
+
+void spark_change_dns_server(const char* dns)
+{
+    LOG(INFO,"custom dns server %s",dns);
+    OIZOM_DNS_CHANGE(dns);
+}
+
 String spark_deviceID(void)
 {
     unsigned len = HAL_device_ID(NULL, 0);

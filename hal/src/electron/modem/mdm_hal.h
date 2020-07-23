@@ -179,6 +179,7 @@ public:
         \return the IP if successful, 0 otherwise
     */
     MDM_IP gethostbyname(const char* host);
+    void change_dns_server(const char* dns);
 
     /** get the current assigned IP address
         \return the ip that is assigned

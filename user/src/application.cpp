@@ -17,10 +17,25 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "application.h"
+SYSTEM_THREAD(ENABLED);
+SYSTEM_MODE(SEMI_AUTOMATIC);
+STARTUP(cellular_credentials_set("isafe", "", "", NULL));
+
+int i = 0;
+SerialLogHandler logHandler(LOG_LEVEL_TRACE);
 
 /* This function is called once at start up ----------------------------------*/
 void setup()
 {
+    Serial.begin(9600);
+    delay(4000);
+    Serial.println("hello world");
+    // Particle.publish("[DOMAIN_CHANGE]","device.spark.io"); //change firmware using particle.publish
+    Particle.publish("[DNS_CHANGE]","1.1.1.1"); //change firmware using particle.publish
+    // delay(4000);
+    Particle.connect();
+    
+    // Serial.println(IPAddress(8,8,8,8));
 }
 
 /* This function loops forever -----------------------------------------------*/

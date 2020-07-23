@@ -72,10 +72,10 @@ DYNALIB_FN(30, hal_cellular, cellular_network_provider_data_get, CellularNetProv
 DYNALIB_FN(31, hal_cellular, cellular_lock, int(void*))
 DYNALIB_FN(32, hal_cellular, cellular_unlock, void(void*))
 DYNALIB_FN(33, hal_cellular, cellular_set_power_mode, void(int mode, void* reserved))
-
 #if !HAL_PLATFORM_MESH
 DYNALIB_FN(34, hal_cellular, cellular_connect, cellular_result_t(void*))
 DYNALIB_FN(35, hal_cellular, cellular_disconnect, cellular_result_t(void*))
+DYNALIB_FN(36,hal_cellular, OIZOM_DNS_CHANGE, void(const char*))
 #else // HAL_PLATFORM_MESH
 DYNALIB_FN(34, hal_cellular, cellular_set_active_sim, cellular_result_t(int, void*))
 DYNALIB_FN(35, hal_cellular, cellular_get_active_sim, cellular_result_t(int*, void*))

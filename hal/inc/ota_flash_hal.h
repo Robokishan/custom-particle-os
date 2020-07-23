@@ -183,7 +183,10 @@ typedef struct __attribute__ ((__packed__)) ServerAddress_ {
   uint8_t length;
   union __attribute__ ((__packed__)) {
     char domain[64];
+    char dns[64];
     uint32_t ip;
+    bool custom_dns_server ;
+    bool custom_domain_name;  
   };
   uint16_t port;
   /**
@@ -203,7 +206,8 @@ PARTICLE_STATIC_ASSERT(ServerAddress_size, sizeof(ServerAddress)==128);
 #define EXTERNAL_FLASH_SERVER_ADDRESS_LENGTH      (128)
 /* Length in bytes of DER-encoded 1024-bit RSA private key */
 #define EXTERNAL_FLASH_CORE_PRIVATE_KEY_LENGTH		(612)
-
+void OIZOM_CUSTOM_SERVERADDR(const char* ip);
+void GET_CUSTOM_OIZOM_SERVERADDR(ServerAddress *server_addr);
 void HAL_FLASH_Read_ServerAddress(ServerAddress *server_addr);
 void HAL_FLASH_Write_ServerAddress(const uint8_t *buf, bool udp);
 void HAL_FLASH_Read_ServerPublicKey(uint8_t *keyBuffer);

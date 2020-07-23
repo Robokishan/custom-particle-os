@@ -22,5 +22,5 @@
 namespace particle {
 
 int getHostByName(const char* name, MDM_IP* addr);
-
+void change_dns_server(const char* dns);
 } // namespace particle

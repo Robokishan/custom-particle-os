@@ -1837,20 +1837,32 @@ MDM_IP MDMParser::gethostbyname(const char* host)
     if (_dev.dev == DEV_SARA_R410) {
         // Current uBlox firmware (L0.0.00.00.05.05) doesn't support +UDNSRN command, so we have to
         // use our own DNS client
+        LOG(INFO,"getHostByName");
         particle::getHostByName(host, &ip);
     } else {
-        int a,b,c,d;
-        if (sscanf(host, IPSTR, &a,&b,&c,&d) == 4) {
-            ip = IPADR(a,b,c,d);
-        } else {
-            sendFormated("AT+UDNSRN=0,\"%s\"\r\n", host);
-            if (RESP_OK != waitFinalResp(_cbUDNSRN, &ip, 30*1000)) {
-                ip = NOIP;
-            }
-        }
+        // int a,b,c,d;
+        // LOG(INFO,"USING ELSE");
+        // if (sscanf(host, IPSTR, &a,&b,&c,&d) == 4) {
+        //     LOG(INFO,"USING IPSTR");
+        //     ip = IPADR(a,b,c,d);
+        // } else {
+        //     LOG(INFO,"USING NEW OLDER ONE");
+        //     sendFormated("AT+UDNSRN=0,\"%s\"\r\n", host);
+        //     if (RESP_OK != waitFinalResp(_cbUDNSRN, &ip, 30*1000)) {
+        //         ip = NOIP;
+        //     }
+        // }
+        LOG(INFO,"getHostByName");
+        particle::getHostByName(host, &ip);
     }
     UNLOCK();
     return ip;
+}
+
+void MDMParser::change_dns_server(const char* dns)
+{
+    LOG(INFO,"MDM CUSTOM DNS SERVER %s",dns);
+    particle::change_dns_server(dns);
 }
 
 // ----------------------------------------------------------------

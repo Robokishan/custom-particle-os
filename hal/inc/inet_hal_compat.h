@@ -102,7 +102,7 @@ typedef uint32_t network_interface_t;
 int inet_gethostbyname(const char* hostname, uint16_t hostnameLen, HAL_IPAddress* out_ip_addr,
         network_interface_t nif, void* reserved);
 
-
+void OIZOM_DNS_CHANGE(const char*);
 /**
  *
  * @param remoteIP  The IP address. MSB..LSB [0..3]

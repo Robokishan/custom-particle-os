@@ -185,10 +185,10 @@ bool spark_sync_time(void *reserved);
 bool spark_sync_time_pending(void* reserved);
 system_tick_t spark_sync_time_last(time_t* tm, void* reserved);
 
-
 void spark_process(void);
 bool spark_cloud_flag_connected(void);
-
+void spark_change_cloud_server(const char* ip);
+void spark_change_dns_server(const char* dns);
 /**
  * Sets the auto-connect state to true. The cloud will be connected by the system.
  */

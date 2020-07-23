@@ -70,7 +70,7 @@ namespace particle {
 namespace {
 
 // DNS server address
-const MDM_IP SERVER_ADDRESS = IPADR(8, 8, 8, 8);
+MDM_IP SERVER_ADDRESS = IPADR(1, 1, 1, 1);
 const uint16_t SERVER_PORT = 53;
 // Maximum host name length
 const size_t MAX_NAME_LENGTH = 255;
@@ -267,6 +267,7 @@ int recvDnsResponse(UdpSocket* sock, DnsQuery* q) {
     if (packetSize > BUFFER_SIZE) {
         return SYSTEM_ERROR_TOO_LARGE;
     }
+    LOG_DEBUG(INFO, "Custom dns server 2: " IPSTR, IPNUM(SERVER_ADDRESS));
     if (addr != SERVER_ADDRESS) {
         return 0; // Ignore packet
     }
@@ -373,18 +374,87 @@ int sendDnsQuery(UdpSocket* sock, DnsQuery* q) {
     tc.type = htons(DNS_RRTYPE_A);
     tc.cls = htons(DNS_RRCLASS_IN);
     memcpy(q->buf.get() + offs, &tc, sizeof(DnsTypeClass));
+    LOG(INFO, "Custom dns server 1: " IPSTR, IPNUM(SERVER_ADDRESS));
+    LOG(INFO, "Custom dns server %d ", SERVER_ADDRESS);
     const int ret = sock->sendTo(SERVER_ADDRESS, SERVER_PORT, q->buf.get(), packetSize);
     if (ret < 0) {
         return ret;
     }
     return 0;
 }
+void convertFromString(const char *address, uint8_t* byteAddress, int len)
+{   
+    uint8_t _address[4];  // IPv4 address
+    // TODO: add support for "a", "a.b", "a.b.c" formats
+
+    uint16_t acc = 0; // Accumulator
+    uint8_t dots = 0;
+
+    while (*address)
+    {
+        char c = *address++;
+        if (c >= '0' && c <= '9')
+        {
+            acc = acc * 10 + (c - '0');
+            if (acc > 255) {
+                // Value out of [0..255] range
+            }
+        }
+        else if (c == '.')
+        {
+            if (dots == 3) {
+                // Too much dots (there must be 3 dots)               
+            }
+            _address[dots++] = acc;
+            acc = 0;
+        }
+        else
+        {
+            // Invalid char           
+        }
+    }
+
+    if (dots != 3) {
+        // Too few dots (there must be 3 dots) 
+    }
+    _address[3] = acc;
+    for(int i =0;i<len;i++)
+    {
+        byteAddress[i] = _address[i];
+    }
+    // IPAddress frombyte( _address );
+    // return frombyte;
+}
+
+void OIZOM_HAL_CHANGE_DNS(const char* dns){
+    LOG(INFO,"oizom hal NAME SPACE CUSTOM DNS SERVER %s",dns);
+    LOG(INFO,"CURRENT " IPSTR, IPNUM(SERVER_ADDRESS));
+    uint8_t custom_dns[4];
+    convertFromString(dns,custom_dns,4);
+    LOG(INFO,"NEW SERVER_ADDRESS %d",custom_dns);
+    SERVER_ADDRESS=IPADR(custom_dns[0],
+                         custom_dns[1],
+                         custom_dns[2],                         
+                         custom_dns[3]
+    );
+    LOG(INFO,"CHANGED TO " IPSTR, IPNUM(SERVER_ADDRESS));
+}
+
+
 
 } // namespace particle::
 
+
+void change_dns_server(const char* dns)
+{
+    LOG(INFO,"PARTICLE NAME SPACE CUSTOM DNS SERVER %s",dns);
+    
+    OIZOM_HAL_CHANGE_DNS(dns);
+}   
+
 int getHostByName(const char* name, MDM_IP* addr) {
     SPARK_ASSERT(name && addr);
-    LOG_DEBUG(TRACE, "Resolving domain name: %s", name);
+    LOG(INFO, "Resolving domain name FROM CUSTOM SERVER: %s", name);
     if (!name[0]) {
         return SYSTEM_ERROR_INVALID_ARGUMENT;
     }

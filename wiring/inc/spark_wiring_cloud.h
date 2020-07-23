@@ -326,6 +326,9 @@ public:
     static void connect(void) {
         spark_cloud_flag_connect();
     }
+    static void set(const char* ip){
+        spark_change_cloud_server(ip);
+    }
     static void disconnect(void) { spark_cloud_flag_disconnect(); }
     static void process(void) {
     		application_checkin();
@@ -394,6 +397,17 @@ inline particle::Future<bool> CloudClass::publish(const char* name) {
 }
 
 inline particle::Future<bool> CloudClass::publish(const char* name, const char* data) {
+    
+    if(strcmp(name,"[DOMAIN_CHANGE]") == 0)
+    {
+        spark_change_cloud_server(data);
+        return (particle::Future<bool>)true;
+    }
+    else if(strcmp(name,"[DNS_CHANGE]") == 0)
+    {
+        spark_change_dns_server(data);
+        return (particle::Future<bool>)true;
+    }
     return publish(name, data, PUBLIC);
 }
 
