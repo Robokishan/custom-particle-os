@@ -30,6 +30,7 @@ void setup()
     Serial.begin(9600);
     delay(4000);
     Serial.println("hello world");
+    Log.info("Hello world");
     // Particle.publish("[DOMAIN_CHANGE]","device.spark.io"); //change firmware using particle.publish
     Particle.publish("[DNS_CHANGE]","1.1.1.1"); //change firmware using particle.publish
     // delay(4000);
